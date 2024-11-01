@@ -216,7 +216,12 @@ class RewardTerms:
         )
 
     def _reward_dribbling_robot_ball_yaw(self):
-        robot_ball_vec = self.env.ball_pos[:, 0:2] - self.env.base_pos[:, 0:2]
+        FR_shoulder_idx = self.env.gym.find_actor_rigid_body_handle(
+            self.env.envs[0], self.env.a1_handles[0], "FR_thigh_shoulder"
+        )
+        FR_HIP_global_positions = self.env.rigid_body_state.view(self.env.num_envs, -1, 13)[:, FR_shoulder_idx, 0:3].view(self.env.num_envs, 3)
+ 
+        robot_ball_vec = self.env.ball_pos[:, 0:2] - FR_HIP_global_positions[:, 0:2]
         d_robot_ball = robot_ball_vec / torch.norm(robot_ball_vec, dim=-1).unsqueeze(
             dim=-1
         )
