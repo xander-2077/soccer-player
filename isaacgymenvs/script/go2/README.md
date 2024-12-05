@@ -1,12 +1,13 @@
 ## obs
-
+```python
 obs{
     'state_obs': (num_envs, 49)
     'state_history': (num_envs, 49*25=1225)
     'state_privilige': (num_envs, 76)
 }
+```
 
-state_obs: 
+### state_obs: 
 1. base_lin_vel: 3
     ```python
     base_quat = root_states[::2, 3:7]
@@ -24,6 +25,7 @@ state_obs:
 3. projected_gravity: 3
 
 4. dof_pos: 12
+
     (dof_pos - default_dof_pos) * dof_pos_scale(1.0)
 
     ```yaml
@@ -44,7 +46,9 @@ state_obs:
     RR_calf_joint: -1.5 # [rad]
     ```
 5. dof_vel: 12
+   
     dof_vel * dof_vel_scale(0.05)
+
 6. last_actions: 12
 
 7. gait_sin_indict: 4
@@ -66,23 +70,25 @@ state_obs:
     self.clock_inputs[:, 3] = torch.sin(2 * np.pi * foot_indices[3])
     ```
 8. body_yaw: 1
+    
     wrap to [-pi, pi]
+
 9.  ball_states_p: 3
+    
     z=0
+
 10. command: 2
+    
     vx, vy: [-1, 1]
 
-state_history:
+### state_history:
 ```python
 self.history_buffer[:] = torch.cat(
     (self.history_buffer[:, self.num_obs :], obs), dim=1
 )
 ```
 
-state_obs and state_history: torch.clamp(, -5.0, 5.0)
-
-
-
+> state_obs and state_history: torch.clamp(, -5.0, 5.0)
 
 
 
