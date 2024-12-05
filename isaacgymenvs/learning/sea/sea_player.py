@@ -47,13 +47,13 @@ class Player(BasePlayer):
         self.model = self.network.build(config)
         self.model.to(self.device)
         self.model.eval()
-        self.is_rnn = self.model.is_rnn()
+        self.is_rnn = self.model.is_rnn()  # false
 
     def get_action(self, obs, is_deterministic=False):
         self.player_config["is_train"] = False
-        if self.has_batch_dimension == False:
+        if self.has_batch_dimension == False:  # false
             obs = unsqueeze_obs(obs)
-        obs = self._preproc_obs(obs)
+        obs = self._preproc_obs(obs)  # skip
         input_dict = {
             "is_train": False,
             "prev_actions": None,
@@ -65,17 +65,17 @@ class Player(BasePlayer):
         mu = res_dict["mus"]
         action = res_dict["actions"]
         self.states = res_dict["rnn_states"]
-        if is_deterministic:
+        if is_deterministic:  # true
             current_action = mu
         else:
             current_action = action
-        if self.has_batch_dimension == False:
+        if self.has_batch_dimension == False:  # false, true when deploy
             current_action = torch.squeeze(current_action.detach())
 
-        if self.need_estimator_data:
+        if self.need_estimator_data:  # false, true when debug
             self.estimator_output = res_dict["latent"]
 
-        if self.clip_actions:
+        if self.clip_actions:  # true
             return rescale_actions(
                 self.actions_low,
                 self.actions_high,
@@ -85,9 +85,42 @@ class Player(BasePlayer):
             return current_action
 
     def restore(self, fn):
+        # this way
         checkpoint = torch_ext.load_checkpoint(fn)
         self.model.load_state_dict(checkpoint["model"], strict=False)
-        if self.normalize_input and "running_mean_std" in checkpoint:
+        
+        # # save jit
+        # import copy
+        # path = "/home/xander/Codes/IsaacGym/DexDribbler/isaacgymenvs/checkpoints/jit"
+        
+        # history_encoder_path = f"{path}/history_encoder.jit"
+        # history_head_path = f"{path}/history_head.jit"
+        # actor_mlp_path = f"{path}/actor_mlp.jit"
+        # mu_act_path = f"{path}/mu_act.jit"
+        # mu_path = f"{path}/mu.jit"
+        
+        # history_encoder = copy.deepcopy(self.model.a2c_network.history_encoder).to('cpu')
+        # history_head = copy.deepcopy(self.model.a2c_network.history_head).to('cpu')
+        # actor_mlp = copy.deepcopy(self.model.a2c_network.actor_mlp).to('cpu')
+        # mu_act = copy.deepcopy(self.model.a2c_network.mu_act).to('cpu')
+        # mu = copy.deepcopy(self.model.a2c_network.mu).to('cpu')
+        
+        # history_encoder_jit = torch.jit.script(history_encoder)
+        # history_head_jit = torch.jit.script(history_head)
+        # actor_mlp_jit = torch.jit.script(actor_mlp)
+        # mu_act_jit = torch.jit.script(mu_act)
+        # mu_jit = torch.jit.script(mu)
+        
+        # history_encoder_jit.save(history_encoder_path)
+        # history_head_jit.save(history_head_path)
+        # actor_mlp_jit.save(actor_mlp_path)
+        # mu_act_jit.save(mu_act_path)
+        # mu_jit.save(mu_path)
+        
+        # import sys
+        # sys.exit()
+        
+        if self.normalize_input and "running_mean_std" in checkpoint:  # false
             self.model.running_mean_std.load_state_dict(checkpoint["running_mean_std"])
 
         env_state = checkpoint.get("env_state", None)
@@ -139,7 +172,7 @@ class Player(BasePlayer):
             print_game_res = False
 
             for n in range(self.max_steps):
-                if has_masks:
+                if has_masks:  # false
                     masks = self.env.get_action_mask()
                     action = self.get_masked_action(obses, masks, is_deterministic)
                 else:

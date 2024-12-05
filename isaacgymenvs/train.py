@@ -174,6 +174,7 @@ def launch_rlg_hydra(cfg: DictConfig):
             )
         return envs
 
+    # register env
     env_configurations.register(
         "rlgpu",
         {
@@ -189,7 +190,7 @@ def launch_rlg_hydra(cfg: DictConfig):
         else False
     )
 
-    if dict_cls:
+    if dict_cls:  # false
         obs_spec = {}
         actor_net_cfg = cfg.train.params.network
         obs_spec["obs"] = {
@@ -291,7 +292,7 @@ def launch_rlg_hydra(cfg: DictConfig):
     # create runner and set the settings
     runner = build_runner(MultiObserver(observers))
     runner.load(rlg_config_dict)
-    runner.reset()
+    runner.reset()  # no use
 
     # dump config dict
     if not cfg.test:

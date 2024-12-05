@@ -9,6 +9,7 @@ class ModelSEAContinuous(ModelA2CContinuousLogStd):
         return
 
     class Network(ModelA2CContinuousLogStd.Network):
+        # inherit nn.Module
         def __init__(self, a2c_network, **kwargs):
             super().__init__(a2c_network, **kwargs)
             return

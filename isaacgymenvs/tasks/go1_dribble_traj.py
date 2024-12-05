@@ -798,7 +798,8 @@ class Go1DribblerTraj(VecTask):
         asset_root = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "../../assets"
         )
-        asset_file = "urdf/go1/urdf/go1-visual-backup.urdf"
+        # asset_file = "urdf/go1/urdf/go1-visual-backup.urdf"
+        asset_file = "urdf/go1/urdf/go1.urdf"
 
         asset_options = gymapi.AssetOptions()
         asset_options.default_dof_drive_mode = gymapi.DOF_MODE_NONE
@@ -1462,7 +1463,7 @@ class Go1DribblerTraj(VecTask):
         self.base_lin_vel = self.root_states[::2, 7:10]
         self.true_object_local_pos = quat_rotate_inverse(
             self.base_quat, self.root_states[1::2, 0:3] - self.root_states[0::2, 0:3]
-        )
+        )  # compute ball position in robot local frame
         self.true_object_local_pos[:, 2] = 0.0 * torch.ones(
             self.num_envs, dtype=torch.float, device=self.device, requires_grad=False
         )
@@ -1656,7 +1657,7 @@ class Go1DribblerTraj(VecTask):
             cat_list.append(commands_scaled)
 
         obs = torch.cat(cat_list, dim=-1)
-
+        # breakpoint()
         if self.add_noise:
             obs += (2 * torch.rand_like(obs) - 1) * self.noise_vec
 

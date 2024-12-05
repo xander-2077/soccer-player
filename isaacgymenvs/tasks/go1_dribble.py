@@ -1237,7 +1237,7 @@ class Go1Dribbler(VecTask):
         # self.obs_dict["pixel"] = self.history_images.to(self.rl_device)
         # for i in self.obs_dict["obs"].keys():
         #     print("i th obs:", i)
-
+        # breakpoint()
         return (
             self.obs_dict,
             self.rew_buf.to(self.rl_device),

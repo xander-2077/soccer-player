@@ -15,6 +15,7 @@ class A2CBuilder(network_builder.NetworkBuilder):
         self.params = params
 
     class Network(network_builder.NetworkBuilder.BaseNetwork):
+        # inherit nn.Module
         def __init__(self, params, **kwargs):
             actions_num = kwargs.pop("actions_num")
             input_shape = kwargs.pop("input_shape")  # this time will be a dict
@@ -150,24 +151,24 @@ class A2CBuilder(network_builder.NetworkBuilder):
             latent = self.history_head(encode)
 
             out = self.actor_mlp(torch.cat([state_obs, latent], dim=1))
-            if self.separate:
+            if self.separate:  # true
                 c_out = self.critic_mlp(torch.cat([state_obs, privilige_obs], dim=1))
                 value = self.value_act(self.value(c_out))
             else:
                 value = self.value_act(self.value(out))
 
-            if self.central_value:
+            if self.central_value:  # false
                 return value, states
 
-            if self.is_discrete:
+            if self.is_discrete:  # false
                 logits = self.logits(out)
                 return logits, value, states
-            if self.is_multi_discrete:
+            if self.is_multi_discrete:  # false
                 logits = [logit(out) for logit in self.logits]
                 return logits, value, states
-            if self.is_continuous:
+            if self.is_continuous:  # true
                 mu = self.mu_act(self.mu(out))
-                if self.fixed_sigma:
+                if self.fixed_sigma:  # true
                     sigma = self.sigma_act(self.sigma)
                 else:
                     sigma = self.sigma_act(self.sigma(out))

@@ -1,0 +1,1 @@
+python train.py task=Go1DribbleTraj train=Go1DribblePPOsea test=true headless=false checkpoint='./checkpoints/dribble-PID-106.pth' task.env.random_params.ball_drag.range_low=0.2 task.env.random_params.ball_drag.range_high=0.21 task.env.log_env_name=mid task.env.log_pt_name=PID
