@@ -208,7 +208,7 @@ env:
     # todo: change to a1 param?
 
   defaultJointAngles: # = target angles when action = 0.0
-    FL_hip_joint: .1 # [rad]
+    FL_hip_joint: 0.1 # [rad]
     RL_hip_joint: 0.1 # [rad]
     FR_hip_joint: -0.1 # [rad]
     RR_hip_joint: -0.1 # [rad]

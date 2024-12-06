@@ -8,23 +8,10 @@ obs{
 ```
 
 ### state_obs: 
-1. base_lin_vel: 3
-    ```python
-    base_quat = root_states[::2, 3:7]
-    base_lin_vel = (
-        quat_rotate_inverse(base_quat, root_states[::2, 7:10]) * lin_vel_scale(1.0)
-    )
-    ```
-2. base_ang_vel: 3
-    ```python
-    base_quat = root_states[::2, 3:7]
-    base_ang_vel = (
-        quat_rotate_inverse(base_quat, root_states[::2, 10:13]) * ang_vel_scale(0.25)
-    )
-    ```
-3. projected_gravity: 3
 
-4. dof_pos: 12
+1. projected_gravity: 3 [0:3]
+
+2. dof_pos: 12 [3:15]
 
     (dof_pos - default_dof_pos) * dof_pos_scale(1.0)
 
@@ -45,13 +32,13 @@ obs{
     FR_calf_joint: -1.5 # [rad]
     RR_calf_joint: -1.5 # [rad]
     ```
-5. dof_vel: 12
+3. dof_vel: 12 [15:27]
    
     dof_vel * dof_vel_scale(0.05)
 
-6. last_actions: 12
+4. last_actions: 12 [27:39]
 
-7. gait_sin_indict: 4
+5. gait_sin_indict: 4 [39:43]
     ```python
     self.gait_indices = torch.remainder(
         self.gait_indices + self.dt(0.02) * self.frequencies(3.), 1.0
@@ -69,15 +56,15 @@ obs{
     self.clock_inputs[:, 2] = torch.sin(2 * np.pi * foot_indices[2])
     self.clock_inputs[:, 3] = torch.sin(2 * np.pi * foot_indices[3])
     ```
-8. body_yaw: 1
+6. body_yaw: 1 [43]
     
     wrap to [-pi, pi]
 
-9.  ball_states_p: 3
+7.  ball_states_p: 3 [44:47]
     
     z=0
 
-10. command: 2
+8.  command: 2 [47:49]
     
     vx, vy: [-1, 1]
 
@@ -131,5 +118,11 @@ return rescale_actions(
     self.actions_high,  # tensor([1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.], device='cuda:0')
     torch.clamp(current_action, -1.0, 1.0),
 )
+
+# in class Go1DribblerTraj(VecTask)
+action_tensor = torch.clamp(actions, -self.clip_actions(-1.0), self.clip_actions(1.0))
+actions_scaled = actions[:, :12] * self.action_scale(0.5)
+actions_scaled[:, [0, 3, 6, 9]] *= self.hip_addtional_scale(0.5)
+
 
 ```
