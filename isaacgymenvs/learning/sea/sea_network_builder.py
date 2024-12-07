@@ -136,6 +136,23 @@ class A2CBuilder(network_builder.NetworkBuilder):
                     sigma_init(self.sigma)
                 else:
                     sigma_init(self.sigma.weight)
+                    
+            # TODO: comment following lines
+            if False:
+                device = "cuda:0"
+                
+                history_encoder_path = "/home/zdj/Quadruped/go2/dexdribbler/isaacgymenvs/checkpoints/jit/history_encoder.jit"
+                history_head_path = "/home/zdj/Quadruped/go2/dexdribbler/isaacgymenvs/checkpoints/jit/history_head.jit"
+                actor_mlp_path = "/home/zdj/Quadruped/go2/dexdribbler/isaacgymenvs/checkpoints/jit/actor_mlp.jit"
+                mu_act_path = "/home/zdj/Quadruped/go2/dexdribbler/isaacgymenvs/checkpoints/jit/mu_act.jit"
+                mu_path = "/home/zdj/Quadruped/go2/dexdribbler/isaacgymenvs/checkpoints/jit/mu.jit"
+                                
+                self.history_encoder = torch.jit.load(history_encoder_path, map_location=device)
+                self.history_head = torch.jit.load(history_head_path, map_location=device)
+                self.actor_mlp = torch.jit.load(actor_mlp_path, map_location=device)
+                self.mu_act = torch.jit.load(mu_act_path, map_location=device)
+                self.mu = torch.jit.load(mu_path, map_location=device)
+                
 
         def forward(self, obs_dict):
             obs = obs_dict["obs"]

@@ -154,6 +154,9 @@ class Player(BasePlayer):
             has_masks = self.env.has_action_mask()
 
         need_init_rnn = self.is_rnn
+        
+        i = 0
+        
         for _ in range(n_games):
             if games_played >= n_games:
                 break
@@ -180,7 +183,14 @@ class Player(BasePlayer):
 
                 if self.need_estimator_data:
                     print(self.estimator_output)
-
+                    
+                # TODO: comment following lines
+                i += 1
+                if i == 1:
+                    self.save_log(obses["state_obs"].squeeze(), action.squeeze(), mode="w")
+                else:
+                    self.save_log(obses["state_obs"].squeeze(), action.squeeze(), mode="a")
+                
                 obses, r, done, info = self.env_step(self.env, action)
                 cr += r
                 steps += 1
@@ -249,3 +259,24 @@ class Player(BasePlayer):
                 "av steps:",
                 sum_steps / games_played * n_game_life,
             )
+
+    def save_log(self, obs, action, filename="../record/record.txt", mode="a"):
+        obs = obs.cpu().numpy()
+        action = action.cpu().numpy()
+        sensor_info = {
+            "projected_gravity": obs[0:3],
+            "dof_pos": obs[3:15],
+            "dof_vel": obs[15:27],
+            "last_actions": obs[27:39],
+            "gait_sin_indict": obs[39:43],
+            "body_yaw": obs[43],
+            "ball_states_p": obs[44:47],
+            "command": obs[47:49],
+        }
+
+        with open(filename, mode) as file:
+            for sensor_name, sensor_values in sensor_info.items():
+                file.write(f"{sensor_name}: {sensor_values}\n")
+            file.write("-" * 20 + "\n")
+            file.write(f"Action: {action}")
+            file.write("-" * 80 + "\n")
