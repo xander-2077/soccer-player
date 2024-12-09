@@ -155,7 +155,11 @@ class Player(BasePlayer):
 
         need_init_rnn = self.is_rnn
         
-        i = 0
+        # # TODO: comment following lines
+        # i = 0
+        # obses_list = []
+        # obses_histroy_list = []
+        # actions_list = []
         
         for _ in range(n_games):
             if games_played >= n_games:
@@ -184,12 +188,16 @@ class Player(BasePlayer):
                 if self.need_estimator_data:
                     print(self.estimator_output)
                     
-                # TODO: comment following lines
-                i += 1
-                if i == 1:
-                    self.save_log(obses["state_obs"].squeeze(), action.squeeze(), mode="w")
-                else:
-                    self.save_log(obses["state_obs"].squeeze(), action.squeeze(), mode="a")
+                # # TODO: comment following lines
+                # i += 1
+                # if i == 1:
+                #     self.save_log(obses["state_obs"].squeeze(), action.squeeze(), mode="w")
+                # else:
+                #     self.save_log(obses["state_obs"].squeeze(), action.squeeze(), mode="a")
+
+                # obses_list.append(obses["state_obs"].squeeze().cpu().numpy())
+                # obses_histroy_list.append(obses["state_history"].squeeze().cpu().numpy())
+                # actions_list.append(action.squeeze().cpu().numpy())
                 
                 obses, r, done, info = self.env_step(self.env, action)
                 cr += r
@@ -241,7 +249,12 @@ class Player(BasePlayer):
                     sum_game_res += game_res
                     if batch_size // self.num_agents == 1 or games_played >= n_games:
                         break
-
+            
+            # # TODO: comment the following lines   
+            # np.save('../record/obses.npy', np.array(obses_list), allow_pickle=False)
+            # np.save('../record/obses_history.npy', np.array(obses_histroy_list), allow_pickle=False)
+            # np.save('../record/actions.npy', np.array(actions_list), allow_pickle=False)
+                
         print(sum_rewards)
         if print_game_res:
             print(
@@ -260,7 +273,7 @@ class Player(BasePlayer):
                 sum_steps / games_played * n_game_life,
             )
 
-    def save_log(self, obs, action, filename="../record/record.txt", mode="a"):
+    def save_log(self, obs, action, filename="../record/record2.txt", mode="a"):
         obs = obs.cpu().numpy()
         action = action.cpu().numpy()
         sensor_info = {
@@ -271,7 +284,7 @@ class Player(BasePlayer):
             "gait_sin_indict": obs[39:43],
             "body_yaw": obs[43],
             "ball_states_p": obs[44:47],
-            "command": obs[47:49],
+            "command": obs[47:],
         }
 
         with open(filename, mode) as file:

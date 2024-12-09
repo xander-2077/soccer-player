@@ -1657,7 +1657,7 @@ class Go1DribblerTraj(VecTask):
             cat_list.append(commands_scaled)
 
         obs = torch.cat(cat_list, dim=-1)
-        # breakpoint()
+
         if self.add_noise:
             obs += (2 * torch.rand_like(obs) - 1) * self.noise_vec
 

@@ -798,7 +798,7 @@ class Go1DribblerTest(VecTask):
         asset_root = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "../../assets"
         )
-        asset_file = "urdf/go1/urdf/go1-visual-backup.urdf"
+        asset_file = "urdf/go1/urdf/go1.urdf"
 
         asset_options = gymapi.AssetOptions()
         asset_options.default_dof_drive_mode = gymapi.DOF_MODE_NONE
