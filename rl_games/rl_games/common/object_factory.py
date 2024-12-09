@@ -9,6 +9,7 @@ class ObjectFactory:
         self._builders = builders
         
     def create(self, name, **kwargs):
+        # 返回一个builder实例
         builder = self._builders.get(name)
         if not builder:
             raise ValueError(name)

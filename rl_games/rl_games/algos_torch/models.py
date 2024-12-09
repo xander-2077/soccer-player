@@ -39,14 +39,14 @@ class BaseModelNetwork(nn.Module):
         if normalize_value:
             self.value_mean_std = RunningMeanStd((self.value_size,))
         if normalize_input:
-            if isinstance(obs_shape, dict):
+            if isinstance(obs_shape, dict):  # true
                 self.running_mean_std = RunningMeanStdObs(obs_shape)
             else:
                 self.running_mean_std = RunningMeanStd(obs_shape)
 
     def norm_obs(self, observation):
         with torch.no_grad():
-            return self.running_mean_std(observation) if self.normalize_input else observation
+            return self.running_mean_std(observation) if self.normalize_input else observation   # true
 
     def unnorm_value(self, value):
         with torch.no_grad():

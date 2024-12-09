@@ -93,7 +93,7 @@ class BasePlayer(object):
             obs = np.float32(obs)
         if self.value_size > 1:
             rewards = rewards[0]
-        if self.is_tensor_obses:
+        if self.is_tensor_obses:  # true
             return self.obs_to_torch(obs), rewards.cpu(), dones.cpu(), infos
         else:
             if np.isscalar(dones):

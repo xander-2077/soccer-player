@@ -22,7 +22,7 @@ def _restore(agent, args):
         agent.restore(args['checkpoint'])
 
 def _override_sigma(agent, args):
-    if 'sigma' in args and args['sigma'] is not None:
+    if 'sigma' in args and args['sigma'] is not None:  # false
         net = agent.model.a2c_network
         if hasattr(net, 'sigma') and hasattr(net, 'fixed_sigma'):
             if net.fixed_sigma:
