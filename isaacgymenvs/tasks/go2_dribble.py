@@ -758,8 +758,9 @@ class Go2Dribbler(VecTask):
         asset_root = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "../../assets"
         )
+        asset_file = "urdf/go2/urdf/go2_change.urdf"  
         # asset_file = "urdf/go2/urdf/go2_change_novisual.urdf"  
-        asset_file = "urdf/go2/urdf/go2_change_novisual_addshoulder.urdf"  
+        # asset_file = "urdf/go2/urdf/go2_change_novisual_addshoulder.urdf"  
 
         asset_options = gymapi.AssetOptions()
         asset_options.default_dof_drive_mode = gymapi.DOF_MODE_NONE

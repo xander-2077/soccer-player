@@ -35,6 +35,7 @@ from .nao_dribble import NaoDribbler
 from .ant import Ant
 
 from .go2_dribble import Go2Dribbler
+from .go2_dribble_traj import Go2DribblerTraj
 
 
 # Mappings from strings to environments
@@ -46,6 +47,7 @@ isaacgym_task_map = {
     "CaDribble": CaDribbler,
     "Ant": Ant,
     "Go2Dribble": Go2Dribbler,
+    "Go2DribbleTraj": Go2DribblerTraj,
 }
 
 
