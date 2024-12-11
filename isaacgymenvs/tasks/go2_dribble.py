@@ -758,7 +758,7 @@ class Go2Dribbler(VecTask):
         asset_root = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "../../assets"
         )
-        asset_file = "urdf/go2/urdf/go2.urdf"
+        asset_file = "urdf/go2/urdf/go2_change.urdf"
 
         asset_options = gymapi.AssetOptions()
         asset_options.default_dof_drive_mode = gymapi.DOF_MODE_NONE
@@ -1727,7 +1727,7 @@ class Go2Dribbler(VecTask):
         Looks for self._reward_<REWARD_NAME>, where <REWARD_NAME> are names of all non zero reward scales in the cfg.
         """
         # reward containers
-        from isaacgymenvs.tasks.go1func.dribble_rewards import RewardTerms
+        from isaacgymenvs.tasks.go2func.dribble_rewards import RewardTerms
 
         self.reward_container = RewardTerms(self)
 
