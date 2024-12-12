@@ -91,7 +91,7 @@ class Player(BasePlayer):
         
         # # save jit
         # import copy
-        # path = "/home/xander/Codes/IsaacGym/DexDribbler/isaacgymenvs/checkpoints/jit"
+        # path = "/home/xander/Codes/IsaacGym/DexDribbler/isaacgymenvs/checkpoints/jit_go2"
         
         # history_encoder_path = f"{path}/history_encoder.jit"
         # history_head_path = f"{path}/history_head.jit"
@@ -117,6 +117,7 @@ class Player(BasePlayer):
         # mu_act_jit.save(mu_act_path)
         # mu_jit.save(mu_path)
         
+        # print("Jit has beed saved!")
         # import sys
         # sys.exit()
         
