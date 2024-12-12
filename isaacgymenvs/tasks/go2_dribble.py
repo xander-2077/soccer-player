@@ -1493,16 +1493,22 @@ class Go2Dribbler(VecTask):
             else:
                 self.command_sums[name] += rew
 
-        if self.postive_reward_ji22:
+        if self.postive_reward_ji22:  # true
             self.rew_buf[:] = self.rew_pos[:] * torch.exp(
                 self.rew_neg[:] / self.sigma_rew_neg
             )
         else:
             self.rew_buf = self.rew_pos + self.rew_neg
+            
+        episode_cumulative["rew_pos"] = self.rew_pos.clone()
+        episode_cumulative["rew_neg"] = self.rew_neg.clone()
+        episode_cumulative["exp_rew_neg"] = torch.exp(self.rew_neg[:] / self.sigma_rew_neg).clone()
 
         episode_cumulative["total_unshaped"] = self.rew_buf.clone()
 
         if self.PID_shaper:
+            episode_cumulative["ji22+positive_shaper"] = (self.rew_buf + self.positive_shaper).clone()
+            episode_cumulative["exp_negtive_shaper"] = torch.exp(self.negtive_shaper / self.sigma_rew_neg).clone()
             self.rew_buf[:] = torch.exp(self.negtive_shaper / self.sigma_rew_neg) * (
                 self.rew_buf + self.positive_shaper
             )

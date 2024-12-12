@@ -276,7 +276,7 @@ class RewardTerms:
         # print("rew_vel_angle_tracking: ", rew_vel_angle_tracking)
         return rew_vel_angle_tracking
 
-    def _reward_feet_clearance(self):
+    def _reward_feet_clearance(self):  # unused
         phases = 1 - torch.abs(
             1.0 - torch.clip((self.env.foot_indices * 2.0) - 1.0, 0.0, 1.0) * 2.0
         )
@@ -291,7 +291,7 @@ class RewardTerms:
         )
         return torch.sum(rew_foot_clearance, dim=1)
 
-    def _reward_raibert_heuristic_self(self):
+    def _reward_raibert_heuristic_self(self):  # unused
         cur_footsteps_translated = (
             self.env.foot_positions - self.env.base_pos.unsqueeze(1)
         )
