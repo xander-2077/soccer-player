@@ -75,10 +75,10 @@ env_names = ["zero", "mid"]
 pt_names = ["baseline", "PID"]
 colors = ["orange", "blue"]
 
-# file_path = "./script/go2/traj_data/traj_plot_data.yaml"
-# env_names = ['mid']
-# pt_names = ["pid"]
-# colors = ['blue']
+file_path = "./traj_plot_data.yaml"
+env_names = ['low']
+pt_names = ["pid"]
+colors = ['blue']
 
 # Load and plot the trajectory
 plot_trajectory_comparison(file_path, env_names, pt_names, colors)
