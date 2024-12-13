@@ -242,7 +242,7 @@ env:
       # base_height: -0.001
 
       # walk this way, this replace the feet air time
-      tracking_contacts_shaped_force: 4.0
+      tracking_contacts_shaped_force: 8.0  # default: 4.0
       tracking_contacts_shaped_vel: 4.0
 
       # raibert_heuristic_self: -10.0

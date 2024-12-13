@@ -1116,15 +1116,15 @@ class Go2Dribbler(VecTask):
 
         self.lag_buffer = self.lag_buffer[1:] + [actions_scaled.clone().to(self.device)]
         self.targets = (
-            # self.lag_buffer[0]
-            actions_scaled
+            self.lag_buffer[0]
+            # actions_scaled
             + self.default_dof_pos
-            # + self.cfg["env"]["random_params"]["dof_calib"]["range_low"]
-            # + (
-            #     self.cfg["env"]["random_params"]["dof_calib"]["range_high"]
-            #     - self.cfg["env"]["random_params"]["dof_calib"]["range_low"]
-            # )
-            # * self.dof_calib_rand_params
+            + self.cfg["env"]["random_params"]["dof_calib"]["range_low"]
+            + (
+                self.cfg["env"]["random_params"]["dof_calib"]["range_high"]
+                - self.cfg["env"]["random_params"]["dof_calib"]["range_low"]
+            )
+            * self.dof_calib_rand_params
         )
 
         self.gym.set_dof_position_target_tensor(

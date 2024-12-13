@@ -1,3 +1,4 @@
+# play
 python train.py task=Go1DribbleTraj train=Go1DribblePPOsea test=true headless=false checkpoint='./checkpoints/dribble-PID-106.pth' task.env.random_params.ball_drag.range_low=0.2 task.env.random_params.ball_drag.range_high=0.21 task.env.log_env_name=mid task.env.log_pt_name=PID
 
 python train.py task=Go1Dribble train=Go1DribblePPOsea test=true headless=false checkpoint='./checkpoints/dribble-PID-106.pth' task.env.random_params.ball_drag.range_low=0.2 task.env.random_params.ball_drag.range_high=0.21 num_envs=1
@@ -7,3 +8,6 @@ python train.py task=Go2Dribble train=Go2DribblePPOsea test=true headless=false 
 python train.py task=Go2Dribble train=Go2DribblePPOsea test=true headless=false checkpoint='./checkpoints/dribble-PID-106.pth' task.env.random_params.ball_drag.range_low=0.2 task.env.random_params.ball_drag.range_high=0.21 num_envs=1
 
 python train.py task=Go2Dribble train=Go2DribblePPOsea test=true headless=false checkpoint='/home/xander/last_Go2_ep_20000_rew_39.840214.pth' task.env.random_params.ball_drag.range_low=0.2 task.env.random_params.ball_drag.range_high=0.21 num_envs=1 sim_device='cuda:0' rl_device='cuda:0'
+
+# train
+python train.py task=Go1Dribble train=Go1DribblePPOsea experiment='Go1_reproduce' wandb_activate=True sim_device='cuda:1' rl_device='cuda:1'
