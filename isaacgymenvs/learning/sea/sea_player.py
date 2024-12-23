@@ -91,13 +91,15 @@ class Player(BasePlayer):
         
         # # save jit
         # import copy
-        # path = "/home/xander/Codes/IsaacGym/DexDribbler/isaacgymenvs/checkpoints/jit_go2"
+        path = "/home/xander/Codes/IsaacGym/DexDribbler/isaacgymenvs/checkpoints/jit_go2"
+        path="/home/zdj/Quadruped/go2/dexdribbler/isaacgymenvs/checkpoints/jit_go2"
         
-        # running_mean_std_dict = self.model.running_mean_std.state_dict()
-        # for k in list(running_mean_std_dict.keys()):
-        #     if k.startswith("running_mean_std.state_privilige"):
-        #         del running_mean_std_dict[k]
-        # torch.save(running_mean_std_dict, path+"/running_mean_std.pth")
+        running_mean_std_dict = self.model.running_mean_std.state_dict()
+        for k in list(running_mean_std_dict.keys()):
+            if k.startswith("running_mean_std.state_privilige"):
+                del running_mean_std_dict[k]
+        torch.save(running_mean_std_dict, path+"/running_mean_std.pth")
+        exit()
         
         # history_encoder_path = f"{path}/history_encoder.jit"
         # history_head_path = f"{path}/history_head.jit"
