@@ -141,11 +141,11 @@ class A2CBuilder(network_builder.NetworkBuilder):
             if False:
                 device = "cuda:0"
                 
-                history_encoder_path = "./checkpoints/jit/history_encoder.jit"
-                history_head_path = "./checkpoints/jit/history_head.jit"
-                actor_mlp_path = "./checkpoints/jit/actor_mlp.jit"
-                mu_act_path = "./checkpoints/jit/mu_act.jit"
-                mu_path = "./checkpoints/jit/mu.jit"
+                history_encoder_path = "./checkpoints/jit_go2/history_encoder.jit"
+                history_head_path = "./checkpoints/jit_go2/history_head.jit"
+                actor_mlp_path = "./checkpoints/jit_go2/actor_mlp.jit"
+                mu_act_path = "./checkpoints/jit_go2/mu_act.jit"
+                mu_path = "./checkpoints/jit_go2/mu.jit"
                                 
                 self.history_encoder_jit = torch.jit.load(history_encoder_path, map_location=device)
                 self.history_head_jit = torch.jit.load(history_head_path, map_location=device)

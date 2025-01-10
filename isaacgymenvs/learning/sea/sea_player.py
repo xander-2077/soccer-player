@@ -88,47 +88,47 @@ class Player(BasePlayer):
         # this way
         checkpoint = torch_ext.load_checkpoint(fn)
         self.model.load_state_dict(checkpoint["model"], strict=False)
-        
-        # # save jit
-        # import copy
-        path = "/home/xander/Codes/IsaacGym/DexDribbler/isaacgymenvs/checkpoints/jit_go2"
-        path="/home/zdj/Quadruped/go2/dexdribbler/isaacgymenvs/checkpoints/jit_go2"
-        
-        running_mean_std_dict = self.model.running_mean_std.state_dict()
-        for k in list(running_mean_std_dict.keys()):
-            if k.startswith("running_mean_std.state_privilige"):
-                del running_mean_std_dict[k]
-        torch.save(running_mean_std_dict, path+"/running_mean_std.pth")
-        exit()
-        
-        # history_encoder_path = f"{path}/history_encoder.jit"
-        # history_head_path = f"{path}/history_head.jit"
-        # actor_mlp_path = f"{path}/actor_mlp.jit"
-        # mu_act_path = f"{path}/mu_act.jit"
-        # mu_path = f"{path}/mu.jit"
-        
-        # history_encoder = copy.deepcopy(self.model.a2c_network.history_encoder).to('cpu')
-        # history_head = copy.deepcopy(self.model.a2c_network.history_head).to('cpu')
-        # actor_mlp = copy.deepcopy(self.model.a2c_network.actor_mlp).to('cpu')
-        # mu_act = copy.deepcopy(self.model.a2c_network.mu_act).to('cpu')
-        # mu = copy.deepcopy(self.model.a2c_network.mu).to('cpu')
-        
-        # history_encoder_jit = torch.jit.script(history_encoder)
-        # history_head_jit = torch.jit.script(history_head)
-        # actor_mlp_jit = torch.jit.script(actor_mlp)
-        # mu_act_jit = torch.jit.script(mu_act)
-        # mu_jit = torch.jit.script(mu)
-        
-        # history_encoder_jit.save(history_encoder_path)
-        # history_head_jit.save(history_head_path)
-        # actor_mlp_jit.save(actor_mlp_path)
-        # mu_act_jit.save(mu_act_path)
-        # mu_jit.save(mu_path)
-        
-        # print("Jit has beed saved!")
-        # import sys
-        # sys.exit()
-        
+
+        # save jit
+        if False:
+            import copy
+            path = "/home/xander/Codes/IsaacGym/DexDribbler/isaacgymenvs/checkpoints/jit_go2_2"
+            # path="/home/zdj/Quadruped/go2/dexdribbler/isaacgymenvs/checkpoints/jit_go2"
+            
+            running_mean_std_dict = self.model.running_mean_std.state_dict()
+            for k in list(running_mean_std_dict.keys()):
+                if k.startswith("running_mean_std.state_privilige"):
+                    del running_mean_std_dict[k]
+            torch.save(running_mean_std_dict, path+"/running_mean_std.pth")
+            
+            history_encoder_path = f"{path}/history_encoder.jit"
+            history_head_path = f"{path}/history_head.jit"
+            actor_mlp_path = f"{path}/actor_mlp.jit"
+            mu_act_path = f"{path}/mu_act.jit"
+            mu_path = f"{path}/mu.jit"
+            
+            history_encoder = copy.deepcopy(self.model.a2c_network.history_encoder).to('cpu')
+            history_head = copy.deepcopy(self.model.a2c_network.history_head).to('cpu')
+            actor_mlp = copy.deepcopy(self.model.a2c_network.actor_mlp).to('cpu')
+            mu_act = copy.deepcopy(self.model.a2c_network.mu_act).to('cpu')
+            mu = copy.deepcopy(self.model.a2c_network.mu).to('cpu')
+            
+            history_encoder_jit = torch.jit.script(history_encoder)
+            history_head_jit = torch.jit.script(history_head)
+            actor_mlp_jit = torch.jit.script(actor_mlp)
+            mu_act_jit = torch.jit.script(mu_act)
+            mu_jit = torch.jit.script(mu)
+            
+            history_encoder_jit.save(history_encoder_path)
+            history_head_jit.save(history_head_path)
+            actor_mlp_jit.save(actor_mlp_path)
+            mu_act_jit.save(mu_act_path)
+            mu_jit.save(mu_path)
+            
+            print("Jit has beed saved!")
+            import sys
+            sys.exit()
+
         if self.normalize_input and "running_mean_std" in checkpoint:  # false
             self.model.running_mean_std.load_state_dict(checkpoint["running_mean_std"])
 
@@ -165,10 +165,11 @@ class Player(BasePlayer):
         need_init_rnn = self.is_rnn
         
         # # TODO: comment following lines
-        # i = 0
-        # obses_list = []
-        # obses_histroy_list = []
-        # actions_list = []
+        i = 0
+        self.max_steps = 1000
+        obses_list = []
+        obses_histroy_list = []
+        actions_list = []
         
         for _ in range(n_games):
             if games_played >= n_games:
@@ -196,7 +197,7 @@ class Player(BasePlayer):
 
                 if self.need_estimator_data:
                     print(self.estimator_output)
-                    
+
                 # # TODO: comment following lines
                 # i += 1
                 # if i == 1:
@@ -204,9 +205,9 @@ class Player(BasePlayer):
                 # else:
                 #     self.save_log(obses["state_obs"].squeeze(), action.squeeze(), mode="a")
 
-                # obses_list.append(obses["state_obs"].squeeze().cpu().numpy())
-                # obses_histroy_list.append(obses["state_history"].squeeze().cpu().numpy())
-                # actions_list.append(action.squeeze().cpu().numpy())
+                obses_list.append(obses["state_obs"].squeeze().cpu().numpy())
+                obses_histroy_list.append(obses["state_history"].squeeze().cpu().numpy())
+                actions_list.append(action.squeeze().cpu().numpy())
                 
                 obses, r, done, info = self.env_step(self.env, action)
                 cr += r
@@ -260,9 +261,10 @@ class Player(BasePlayer):
                         break
             
             # # TODO: comment the following lines   
-            # np.save('../record/obses.npy', np.array(obses_list), allow_pickle=False)
-            # np.save('../record/obses_history.npy', np.array(obses_histroy_list), allow_pickle=False)
-            # np.save('../record/actions.npy', np.array(actions_list), allow_pickle=False)
+            np.save('../record/obses.npy', np.array(obses_list), allow_pickle=False)
+            np.save('../record/obses_history.npy', np.array(obses_histroy_list), allow_pickle=False)
+            np.save('../record/actions.npy', np.array(actions_list), allow_pickle=False)
+            import sys; sys.exit()
                 
         print(sum_rewards)
         if print_game_res:
@@ -282,7 +284,7 @@ class Player(BasePlayer):
                 sum_steps / games_played * n_game_life,
             )
 
-    def save_log(self, obs, action, filename="../record/record2.txt", mode="a"):
+    def save_log(self, obs, action, filename="../record/record.txt", mode="a"):
         obs = obs.cpu().numpy()
         action = action.cpu().numpy()
         sensor_info = {
