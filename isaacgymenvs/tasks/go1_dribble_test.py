@@ -113,6 +113,28 @@ def wrap_to_pi(angles):
 
 from typing import Dict, Any, Tuple, List, Set
 
+# joystick    
+import pygame
+axis_id = {
+    "LX": 0,  # Left stick axis x
+    "LY": 1,  # Left stick axis y
+    "RX": 3,  # Right stick axis x
+    "RY": 4,  # Right stick axis y
+    "LT": 2,  # Left trigger
+    "RT": 5,  # Right trigger
+    "DX": 6,  # Directional pad x
+    "DY": 7,  # Directional pad y
+}
+button_id = {
+    "X": 2,
+    "Y": 3,
+    "B": 1,
+    "A": 0,
+    "LB": 4,
+    "RB": 5,
+    "SELECT": 6,
+    "START": 7,
+}
 
 class Go1DribblerTest(VecTask):
     def __init__(
@@ -377,6 +399,16 @@ class Go1DribblerTest(VecTask):
         self.reset_idx(torch.arange(self.num_envs, device=self.device))
         self.set_actor_root_state_tensor_indexed()
         # print ("Go1WallKicker init done by gymenv!!")
+        
+        # joystick
+        pygame.init()
+        pygame.joystick.init()
+        joystick_count = pygame.joystick.get_count()
+        if joystick_count == 0:
+            raise Exception("No joystick detected")
+        else:
+            self.joystick = pygame.joystick.Joystick(0)
+            self.joystick.init()
 
     def init_curriculum(self):
         # init curriculum
@@ -1595,6 +1627,12 @@ class Go1DribblerTest(VecTask):
         projected_gravity = quat_rotate_inverse(base_quat, gravity_vec)
         dof_pos_scaled = (dof_pos - default_dof_pos) * dof_pos_scale
 
+        # joystick
+        pygame.event.get()
+        x_vel_cmd = -self.joystick.get_axis(axis_id["LY"]) * 1.5
+        y_vel_cmd = -self.joystick.get_axis(axis_id["LX"]) * 1.5
+        commands = torch.tensor([[x_vel_cmd, y_vel_cmd]], device=self.device)           
+        
         commands_scaled = commands * lin_vel_scale
 
         ball_states_p = self.object_local_pos
@@ -1635,7 +1673,7 @@ class Go1DribblerTest(VecTask):
 
         if "command" in self.cfg["env"]["state_observations"]:
             cat_list.append(commands_scaled)
-
+        print(f"command: {commands_scaled.squeeze().cpu().tolist()}")  # TOBEDELETED
         obs = torch.cat(cat_list, dim=-1)
 
         if self.add_noise:

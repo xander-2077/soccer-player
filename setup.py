@@ -24,6 +24,7 @@ INSTALL_REQUIRES = [
     "pyvirtualdisplay",
     "isaacgym-stubs",
     "wandb",
+    "pandas==1.5"
 ]
 
 

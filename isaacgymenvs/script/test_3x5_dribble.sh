@@ -22,7 +22,7 @@ env_length=${#env_name[@]}
 
 for i in $(seq 0 $((pt_length - 1))); do
     for j in $(seq 0 $((env_length - 1))); do
-        python train.py task=Go1DribbleTest train=Go1DribblePPOsea test=true headless=true ${pt_array[$i]} ${env_array[$j]} task.env.log_env_name=${env_name[$j]} task.env.log_pt_name=${pt_name[$i]}
+        python train.py task=Go1DribbleTest train=Go1DribblePPOsea test=true headless=false ${pt_array[$i]} ${env_array[$j]} task.env.log_env_name=${env_name[$j]} task.env.log_pt_name=${pt_name[$i]}
     done
 done
 
