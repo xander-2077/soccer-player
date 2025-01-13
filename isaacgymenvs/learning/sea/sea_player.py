@@ -208,7 +208,7 @@ class Player(BasePlayer):
                 obses_list.append(obses["state_obs"].squeeze().cpu().numpy())
                 obses_histroy_list.append(obses["state_history"].squeeze().cpu().numpy())
                 actions_list.append(action.squeeze().cpu().numpy())
-                
+
                 obses, r, done, info = self.env_step(self.env, action)
                 cr += r
                 steps += 1
@@ -261,10 +261,11 @@ class Player(BasePlayer):
                         break
             
             # # TODO: comment the following lines   
-            np.save('../record/obses.npy', np.array(obses_list), allow_pickle=False)
-            np.save('../record/obses_history.npy', np.array(obses_histroy_list), allow_pickle=False)
-            np.save('../record/actions.npy', np.array(actions_list), allow_pickle=False)
-            import sys; sys.exit()
+            # np.save('../record/obses.npy', np.array(obses_list), allow_pickle=False)
+            # np.save('../record/obses_history.npy', np.array(obses_histroy_list), allow_pickle=False)
+            # np.save('../record/actions.npy', np.array(actions_list), allow_pickle=False)
+            # np.save('../record/targets.npy', np.array(self.env.store_target_dof_pos_list), allow_pickle=False)
+            # import sys; sys.exit()
                 
         print(sum_rewards)
         if print_game_res:

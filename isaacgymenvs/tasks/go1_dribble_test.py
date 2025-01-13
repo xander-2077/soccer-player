@@ -409,6 +409,9 @@ class Go1DribblerTest(VecTask):
         else:
             self.joystick = pygame.joystick.Joystick(0)
             self.joystick.init()
+            
+        # TEST: for save target dof pos
+        # self.store_target_dof_pos_list = []
 
     def init_curriculum(self):
         # init curriculum
@@ -1173,6 +1176,22 @@ class Go1DribblerTest(VecTask):
                 )
 
     def pre_physics_step(self, actions):
+        '''
+            hasLimits     lower     upper  driveMode  velocity  effort  stiffness  damping  friction  armature
+        0        True -0.802851  0.802851          1      50.0    33.5       20.0      0.5       0.0       0.0
+        1        True -1.047198  4.188790          1      28.0    33.5       20.0      0.5       0.0       0.0
+        2        True -2.696534 -0.916298          1      28.0    33.5       20.0      0.5       0.0       0.0
+        3        True -0.802851  0.802851          1      50.0    33.5       20.0      0.5       0.0       0.0
+        4        True -1.047198  4.188790          1      28.0    33.5       20.0      0.5       0.0       0.0
+        5        True -2.696534 -0.916298          1      28.0    33.5       20.0      0.5       0.0       0.0
+        6        True -0.802851  0.802851          1      50.0    33.5       20.0      0.5       0.0       0.0
+        7        True -1.047198  4.188790          1      28.0    33.5       20.0      0.5       0.0       0.0
+        8        True -2.696534 -0.916298          1      28.0    33.5       20.0      0.5       0.0       0.0
+        9        True -0.802851  0.802851          1      50.0    33.5       20.0      0.5       0.0       0.0
+        10       True -1.047198  4.188790          1      28.0    33.5       20.0      0.5       0.0       0.0
+        11       True -2.696534 -0.916298          1      28.0    33.5       20.0      0.5       0.0       0.0
+
+        '''
         self.last_last_targets = self.last_targets.clone()
         self.last_targets = self.targets.clone()
         self.last_dof_vel = (
@@ -1185,20 +1204,31 @@ class Go1DribblerTest(VecTask):
         actions_scaled[:, [0, 3, 6, 9]] *= self.hip_addtional_scale
 
         self.lag_buffer = self.lag_buffer[1:] + [actions_scaled.clone().to(self.device)]
+        # self.targets = (
+        #     self.lag_buffer[0]
+        #     + self.default_dof_pos
+        #     + self.cfg["env"]["random_params"]["dof_calib"]["range_low"]
+        #     + (
+        #         self.cfg["env"]["random_params"]["dof_calib"]["range_high"]
+        #         - self.cfg["env"]["random_params"]["dof_calib"]["range_low"]
+        #     )
+        #     * self.dof_calib_rand_params
+        # )
+        # TEST: 
         self.targets = (
-            self.lag_buffer[0]
+            actions_scaled.clone().to(self.device)
             + self.default_dof_pos
-            + self.cfg["env"]["random_params"]["dof_calib"]["range_low"]
-            + (
-                self.cfg["env"]["random_params"]["dof_calib"]["range_high"]
-                - self.cfg["env"]["random_params"]["dof_calib"]["range_low"]
-            )
-            * self.dof_calib_rand_params
         )
-
+        
+        # self.store_target_dof_pos_list.append(self.targets.clone().squeeze().cpu().numpy())  # TEST: store the target dof pos
+        
         self.gym.set_dof_position_target_tensor(
             self.sim, gymtorch.unwrap_tensor(self.targets)
         )
+        
+        
+        # self.gym.get_actor_dof_properties(self.envs[0], self.a1_handles[0])  # TEST: get the dof properties
+
 
     def step(
         self, actions: torch.Tensor
@@ -1211,9 +1241,8 @@ class Go1DribblerTest(VecTask):
             Observations, rewards, resets, info
             Observations are dict of observations (currently only one member called 'obs')
         """
-
         # randomize actions
-        if self.dr_randomizations.get("actions", None):
+        if self.dr_randomizations.get("actions", None):  # false
             actions = self.dr_randomizations["actions"]["noise_lambda"](actions)
 
         action_tensor = torch.clamp(actions, -self.clip_actions, self.clip_actions)
